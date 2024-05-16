@@ -7,6 +7,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 app.use(express.static('public'));
+
 app.get('/', (req, res) => {
     res.send('Welcome to the Task Management API!');
 });

@@ -13,23 +13,32 @@ module.exports = {
   },
 
   // Other task service functions (e.g., createTask, updateTask, deleteTask)...
-  async createTask(title, description, assigned_to, status) {
+  async createTask(name, img, assigned_to) {
     const [result] = await pool.query(
-      'INSERT INTO tasks (title, description, assigned_to, status) VALUES (?, ?, ?, ?)',
-      [title, description, assigned_to, status]
+      'INSERT INTO tasks (name, img, assigned_to) VALUES (?, ?, ?)',
+      [name, img, assigned_to ]
     );
     const newTaskId = result.insertId;
-    return { id: newTaskId, title, description, assigned_to, status };
+    return { id: newTaskId, name, img, assigned_to  };
   },
 
   async updateTask(taskId, updates) {
-    const { title, description, assigned_to, status } = updates;
+    const { name, img, assigned_to} = updates;
     await pool.query(
-      'UPDATE tasks SET title=?, description=?, assigned_to=?, status=? WHERE id=?',
-      [title, description, assigned_to, status, taskId]
+      'UPDATE tasks SET name=?, img=?, assigned_to=?, WHERE id=?',
+      [name, img, assigned_to,taskId]
     );
-    return { id: taskId, title, description, assigned_to, status };
+    return { id: taskId, name, img, assigned_to };
   },
+
+  async deleteTask(taskId) {
+    const [result] = await pool.query('DELETE FROM tasks WHERE id=?', [taskId]);
+    if (result.affectedRows > 0) {
+      return true;
+    } else {
+      throw new Error(`Task with ID ${taskId} not found`);
+    }
+  }
 };
 
 
